@@ -36,14 +36,16 @@ while True:
            camera.resolution, 'RGB')
 
     if img:
-        ball, center = ball.find_ball(img, plot=True)
+        '''
+        image = pygame.surfarray.array3d(img)
+        ball, center = ball.find_ball(image, plot=True)
         if ball is not None:
             print(ball, center)
             if ball[0] < center[0]:
                 print('left')
             elif ball[0] > center[0]:
                 print('right')
-
+        '''
         img = pygame.transform.scale(img, (640, 420))
         screen.blit(img, (x,y))
         # TODO draw circle around ball
@@ -62,9 +64,17 @@ while True:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 car.left()
-            if event.key == pygame.K_RIGHT:
+            elif event.key == pygame.K_RIGHT:
                 car.right()
-            if event.key == pygame.K_UP:
+            elif event.key == pygame.K_UP:
                 car.forward()
-            if event.key == pygame.K_DOWN:
+            elif event.key == pygame.K_DOWN:
                 car.backward()
+            elif event.key == pygame.K_k:
+                car.kick()
+            elif event.key == 13:
+                car.stop()
+            else:
+                print(event.key)
+        #else:
+        #    car.stop()
