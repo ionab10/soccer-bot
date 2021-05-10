@@ -3,11 +3,8 @@ from glob import glob
 import cv2
 
 from matplotlib import pyplot as plt
-%matplotlib inline
 
-def find_ball(image, width=640, plot=False):
-    resized = cv2.resize(image, (width, int(image.shape[0] * width / image.shape[1])), interpolation = cv2.INTER_AREA)
-    
+def get_mask(resized):
     #mask = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
     
     hls = cv2.cvtColor(resized, cv2.COLOR_BGR2HLS)
@@ -23,9 +20,13 @@ def find_ball(image, width=640, plot=False):
     mask = np.bitwise_or(white_mask, black_mask)
     mask = np.bitwise_and(mask, np.bitwise_not(green_mask))
 
+def find_ball(image, width=640, plot=False):
+    resized = cv2.resize(image, (width, int(image.shape[0] * width / image.shape[1])), interpolation = cv2.INTER_AREA)
+    
     center = (resized.shape[0]/2, resized.shape[1]/2)
 
     # detect circles in the image
+    mask = get_mask(resized)
     circles = cv2.HoughCircles(mask, cv2.HOUGH_GRADIENT, 2, 500, maxRadius=250)
     
     fig, ax = plt.subplots(1, 2, figsize=(3,2))
@@ -38,7 +39,7 @@ def find_ball(image, width=640, plot=False):
         return None, center
     else:
         
-        circles = np.round(circles[0, 🙂).astype("int")
+        circles = np.round(circles[0, :]).astype("int")
     
         if plot:
             
@@ -51,14 +52,6 @@ def find_ball(image, width=640, plot=False):
 
         return circles[0], center
 
-for fn in glob('./soccer_balls/*'):
-    print(fn)
-    image = cv2.imread(fn)
+def load_img(fn):
+    return cv2.imread(fn)
 
-    ball, center = find_ball(image, plot=True)
-    if ball is not None:
-        print(ball, center)
-        if ball[0] < center[0]:
-            print('left')
-        elif ball[0] > center[0]:
-            print('right')
