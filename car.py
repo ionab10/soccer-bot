@@ -50,32 +50,30 @@ def turn(angle):
     #front_servo.angle += angle
     return
 
-def start(forward=True):
-    if forward:
-        in1r.duty_cycle = DUTY_HIGH
-        in2r.duty_cycle = 0
-        in3r.duty_cycle = DUTY_HIGH
-        in4r.duty_cycle = 0
-        in1l.duty_cycle = DUTY_HIGH
-        in2l.duty_cycle = 0
-        in3l.duty_cycle = DUTY_HIGH
-        in4l.duty_cycle = 0
-        
-    else:
-        
-        in1r.duty_cycle = 0
-        in2r.duty_cycle = DUTY_HIGH
-        in3r.duty_cycle = 0
-        in4r.duty_cycle = DUTY_HIGH
-        in1l.duty_cycle = 0
-        in2l.duty_cycle = DUTY_HIGH
-        in3l.duty_cycle = 0
-        in4l.duty_cycle = DUTY_HIGH
-    
 def stop():
     for p in motors:
         p.duty_cycle = 0
+
+def forward():
+    in1r.duty_cycle = DUTY_HIGH
+    in2r.duty_cycle = 0
+    in3r.duty_cycle = DUTY_HIGH
+    in4r.duty_cycle = 0
+    in1l.duty_cycle = DUTY_HIGH
+    in2l.duty_cycle = 0
+    in3l.duty_cycle = DUTY_HIGH
+    in4l.duty_cycle = 0
         
+def backward():
+    in1r.duty_cycle = 0
+    in2r.duty_cycle = DUTY_HIGH
+    in3r.duty_cycle = 0
+    in4r.duty_cycle = DUTY_HIGH
+    in1l.duty_cycle = 0
+    in2l.duty_cycle = DUTY_HIGH
+    in3l.duty_cycle = 0
+    in4l.duty_cycle = DUTY_HIGH
+
 def left():
     in1r.duty_cycle = 0
     in2r.duty_cycle = DUTY_HIGH
@@ -187,17 +185,14 @@ def change_speed(mps):
     #p_A.ChangeDutyCycle(PWM_FACTOR*MPS)
     #p_B.ChangeDutyCycle(PWM_FACTOR*MPS)
 
+def cleanup():
+    cam.angle = 0
+    stop()
+    GPIO.cleanup()
 
 #front_servo.angle = 50 
-
-print("\n")
-print("The default speed & direction of motor is LOW & Forward.....")
-print("s-stop k-kick p-pan e-exit")
-print("\n")
-
-stop()
     
-    
+'''
 while(1):
 
     x=input()
@@ -241,7 +236,7 @@ while(1):
         print("<<<  wrong data  >>>")
         print("please enter the defined data to continue.....")
     x=None
+cleanup()
 
-cam.angle = 0
-stop()
-GPIO.cleanup()
+'''
+

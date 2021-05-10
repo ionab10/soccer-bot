@@ -2,9 +2,11 @@ import sys
 import picamera
 import pygame
 import io
-#import pygame.camera
+import ball
+import car
 pygame.init()
-#pygame.camera.init()
+
+car.stop()
 
 #screen = pygame.display.set_mode((640,480),0)
 screen = pygame.display.set_mode((0,0))
@@ -23,13 +25,6 @@ while True:
 
     #screen.fill((255, 255, 255))
     screen.fill(0)
-
-    '''
-    image1 = cam.get_image()
-    image1 = pygame.transform.scale(image1,(640,480))
-    screen.blit(image1,(0,0))
-    '''
-
     
     stream = io.BytesIO()
     camera.capture(stream, use_video_port=True, format='rgb')
@@ -41,15 +36,24 @@ while True:
            camera.resolution, 'RGB')
 
     if img:
+        ball, center = ball.find_ball(img, plot=True)
+        if ball is not None:
+            print(ball, center)
+            if ball[0] < center[0]:
+                print('left')
+            elif ball[0] > center[0]:
+                print('right')
+
         img = pygame.transform.scale(img, (640, 420))
         screen.blit(img, (x,y))
+        # TODO draw circle around ball
 
     pygame.display.update()
 
     # Did the user click the window close button?
     for event in pygame.event.get():
-        if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            #cam.stop()
+        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+            car.cleanup()
             camera.close()
             pygame.display.quit()
             pygame.quit()
@@ -57,6 +61,10 @@ while True:
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                location -= 1
+                car.left()
             if event.key == pygame.K_RIGHT:
-                location += 1
+                car.right()
+            if event.key == pygame.K_UP:
+                car.forward()
+            if event.key == pygame.K_DOWN:
+                car.backward()
