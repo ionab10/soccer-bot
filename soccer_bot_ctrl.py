@@ -1,5 +1,5 @@
 import sys
-#import picamera
+import picamera
 import pygame
 import io
 #import pygame.camera
@@ -9,12 +9,7 @@ pygame.init()
 #screen = pygame.display.set_mode((640,480),0)
 screen = pygame.display.set_mode((0,0))
 
-'''
-cam_list = pygame.camera.list_cameras()
-cam = pygame.camera.Camera(cam_list[0],(32,24))
-cam.start()
-'''
-'''
+
 camera = picamera.PiCamera()
 camera.resolution = (1280, 720)
 camera.crop = (0.0, 0.0, 1.0, 1.0)
@@ -22,7 +17,7 @@ camera.crop = (0.0, 0.0, 1.0, 1.0)
 x = (screen.get_width() - camera.resolution[0]) / 2
 y = (screen.get_height() - camera.resolution[1]) / 2
 rgb = bytearray(camera.resolution[0] * camera.resolution[1] * 3)
-'''
+
 
 while True:
 
@@ -35,7 +30,7 @@ while True:
     screen.blit(image1,(0,0))
     '''
 
-    '''
+    
     stream = io.BytesIO()
     camera.capture(stream, use_video_port=True, format='rgb')
     stream.seek(0)
@@ -44,16 +39,16 @@ while True:
     img = pygame.image.frombuffer(rgb[0:
           (camera.resolution[0] * camera.resolution[1] * 3)],
            camera.resolution, 'RGB')
-    '''
-    img = None
+
     if img:
+        img = pygame.transform.scale(img, (640, 420))
         screen.blit(img, (x,y))
 
     pygame.display.update()
 
     # Did the user click the window close button?
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+        if event.type == pygame.QUIT or event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             #cam.stop()
             camera.close()
             pygame.display.quit()
