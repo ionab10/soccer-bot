@@ -10,7 +10,7 @@ from adafruit_servokit import ServoKit
 
 DUTY_HIGH = 0xffff
 DUTY_LOW = 0
-ACCELERATION = 1000
+ACCELERATION = 10000
 
 motor_i2c = bitbangio.I2C(board.SCL, board.SDA)
 motor_hat = PCA9685(motor_i2c)
