@@ -3,9 +3,10 @@ import picamera
 import pygame
 import io
 import ball
-import car
+from car import Car
 pygame.init()
 
+car = Car()
 car.stop()
 
 #screen = pygame.display.set_mode((640,480),0)

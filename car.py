@@ -72,7 +72,7 @@ class Car():
         self.knee.angle = 45
         self.cam.angle = 0
 
-    def kick():
+    def kick(self):
         self.leg.angle = 150
         self.knee.angle = 0
         time.sleep(1)
@@ -82,85 +82,85 @@ class Car():
         self.leg.angle = 100
         self.knee.angle = 45
 
-    def stop():
+    def stop(self):
         self.rear_passenger.stop()
         self.front_passenger.stop()
         self.rear_driver.stop()
         self.front_driver.stop()
 
-    def forward():
+    def forward(self):
         self.rear_passenger.forward()
         self.front_passenger.forward()
         self.rear_driver.forward()
         self.front_driver.forward()
             
-    def backward():
+    def backward(self):
         self.rear_passenger.backward()
         self.front_passenger.backward()
         self.rear_driver.backward()
         self.front_driver.backward()
 
-    def left():
+    def left(self):
         self.rear_passenger.backward()
         self.front_passenger.forward()
         self.rear_driver.backward()
         self.front_driver.forward()
         
-    def right():
+    def right(self):
         self.rear_passenger.forward()
         self.front_passenger.backward()
         self.rear_driver.forward()
         self.front_driver.backward()
         
-    def forward_right():
+    def forward_right(self):
         self.rear_passenger.forward()
         self.front_passenger.stop()
         self.rear_driver.forward()
         self.front_driver.stop()
         
-    def forward_left():
+    def forward_left(self):
         self.rear_passenger.stop()
         self.front_passenger.forward()
         self.rear_driver.stop()
         self.front_driver.forward()
         
-    def rotate_right_back():
+    def rotate_right_back(self):
         self.rear_passenger.stop()
         self.front_passenger.stop()
         self.rear_driver.forward()
         self.front_driver.forward()
         
-    def rotate_left_back():
+    def rotate_left_back(self):
         self.rear_passenger.forward()
         self.front_passenger.forward()
         self.rear_driver.stop()
         self.front_driver.stop()
         
-    def clockwise():
+    def clockwise(self):
         self.rear_passenger.backward()
         self.front_passenger.backward()
         self.rear_driver.forward()
         self.front_driver.forward()
         
-    def counter_clockwise():
+    def counter_clockwise(self):
         self.rear_passenger.forward()
         self.front_passenger.forward()
         self.rear_driver.backward()
         self.front_driver.backward()
         
-    def clockwise_back():
+    def clockwise_back(self):
         self.rear_passenger.forward()
         self.front_passenger.stop()
         self.rear_driver.stop()
         self.front_driver.backward()
         
-    def counter_clockwise_back():
+    def counter_clockwise_back(self):
         self.rear_passenger.backward()
         self.front_passenger.stop()
         self.rear_driver.stop()
         self.front_driver.forward()
 
-    def cleanup():
+    def cleanup(self):
         self.cam.angle = 0
         self.stop()
         GPIO.cleanup()
