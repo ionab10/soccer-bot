@@ -9,234 +9,159 @@ from adafruit_pca9685 import PCA9685
 from adafruit_servokit import ServoKit
 
 DUTY_HIGH = 0xffff
+DUTY_LOW = 0
+ACCELERATION = 1000
 
 motor_i2c = bitbangio.I2C(board.SCL, board.SDA)
 motor_hat = PCA9685(motor_i2c)
 motor_hat.frequency = 60
-in1r = motor_hat.channels[8]
-in2r = motor_hat.channels[9]
-in3r = motor_hat.channels[11]
-in4r = motor_hat.channels[10]
-in1l = motor_hat.channels[1]
-in2l = motor_hat.channels[0]
-in3l = motor_hat.channels[2]
-in4l = motor_hat.channels[3]
-motors = [in1r, in2r, in3r, in4r, in1l, in2l, in3l, in4l]
-
 
 servo_i2c = bitbangio.I2C(board.D9, board.D8)
 servo_hat = ServoKit(channels=16, i2c = servo_i2c)
-leg = servo_hat.servo[0]
-knee = servo_hat.servo[1]
-cam = servo_hat.servo[15]
-leg.angle = 110
-knee.angle = 45
-cam.angle = 0
-    
-def kick():
-    leg.angle = 150
-    knee.angle = 0
-    time.sleep(1)
-    leg.angle = 0
-    knee.angle = 45
-    time.sleep(1)
-    leg.angle = 100
-    knee.angle = 45
-    
-def pan():
-    pass
 
-def turn(angle):
-    #front_servo.angle += angle
-    return
+class Camera():
 
-def stop():
-    for p in motors:
-        p.duty_cycle = 0
+    def __init__(self):
+        pass
 
-def forward():
-    in1r.duty_cycle = DUTY_HIGH
-    in2r.duty_cycle = 0
-    in3r.duty_cycle = DUTY_HIGH
-    in4r.duty_cycle = 0
-    in1l.duty_cycle = DUTY_HIGH
-    in2l.duty_cycle = 0
-    in3l.duty_cycle = DUTY_HIGH
-    in4l.duty_cycle = 0
+class Wheel():
+
+    def __init__(self, in1, in2, en):
+        self.in1 = in1
+        self.in2 = in2
+        self.en = en
+        self.v = 0
+
+    def stop(self):
+        self.in1.duty_cycle = DUTY_LOW
+        self.in2.duty_cycle = DUTY_LOW
+        self.v = 0
+        self.en.duty_cycle = 0
         
-def backward():
-    in1r.duty_cycle = 0
-    in2r.duty_cycle = DUTY_HIGH
-    in3r.duty_cycle = 0
-    in4r.duty_cycle = DUTY_HIGH
-    in1l.duty_cycle = 0
-    in2l.duty_cycle = DUTY_HIGH
-    in3l.duty_cycle = 0
-    in4l.duty_cycle = DUTY_HIGH
+    def forward(self):
+        # if already going backwards, stop first
+        if self.v < 0:
+            self.stop()
+        self.in1.duty_cycle = DUTY_HIGH
+        self.in2.duty_cycle = DUTY_LOW
+        self.v= min(self.v + ACCELERATION, DUTY_HIGH)
+        self.en.duty_cycle = self.v
 
-def left():
-    in1r.duty_cycle = 0
-    in2r.duty_cycle = DUTY_HIGH
-    in3r.duty_cycle = DUTY_HIGH
-    in4r.duty_cycle = 0
-    in1l.duty_cycle = 0
-    in2l.duty_cycle = DUTY_HIGH
-    in3l.duty_cycle = DUTY_HIGH
-    in4l.duty_cycle = 0
-    
-def right():
-    in1r.duty_cycle = DUTY_HIGH
-    in2r.duty_cycle = 0
-    in3r.duty_cycle = 0
-    in4r.duty_cycle = DUTY_HIGH
-    in1l.duty_cycle = DUTY_HIGH
-    in2l.duty_cycle = 0
-    in3l.duty_cycle = 0
-    in4l.duty_cycle = DUTY_HIGH
-    
-def forward_right():
-    in1r.duty_cycle = DUTY_HIGH
-    in2r.duty_cycle = 0
-    in3r.duty_cycle = 0
-    in4r.duty_cycle = 0
-    in1l.duty_cycle = DUTY_HIGH
-    in2l.duty_cycle = 0
-    in3l.duty_cycle = 0
-    in4l.duty_cycle = 0
-    
-def forward_left():
-    in1r.duty_cycle = 0
-    in2r.duty_cycle = 0
-    in3r.duty_cycle = DUTY_HIGH
-    in4r.duty_cycle = 0
-    in1l.duty_cycle = 0
-    in2l.duty_cycle = 0
-    in3l.duty_cycle = DUTY_HIGH
-    in4l.duty_cycle = 0
-    
-def rotate_right_back():
-    in1r.duty_cycle = 0
-    in2r.duty_cycle = 0
-    in3r.duty_cycle = 0
-    in4r.duty_cycle = 0
-    in1l.duty_cycle = DUTY_HIGH
-    in2l.duty_cycle = 0
-    in3l.duty_cycle = DUTY_HIGH
-    in4l.duty_cycle = 0
-    
-def rotate_left_back():
-    in1r.duty_cycle = DUTY_HIGH
-    in2r.duty_cycle = 0
-    in3r.duty_cycle = DUTY_HIGH
-    in4r.duty_cycle = 0
-    in1l.duty_cycle = 0
-    in2l.duty_cycle = 0
-    in3l.duty_cycle = 0
-    in4l.duty_cycle = 0
-    
-def clockwise():
-    in1r.duty_cycle = 0
-    in2r.duty_cycle = DUTY_HIGH
-    in3r.duty_cycle = 0
-    in4r.duty_cycle = DUTY_HIGH
-    in1l.duty_cycle = DUTY_HIGH
-    in2l.duty_cycle = 0
-    in3l.duty_cycle = DUTY_HIGH
-    in4l.duty_cycle = 0
-    
-def counter_clockwise():
-    in1r.duty_cycle = DUTY_HIGH
-    in2r.duty_cycle = 0
-    in3r.duty_cycle = DUTY_HIGH
-    in4r.duty_cycle = 0
-    in1l.duty_cycle = 0
-    in2l.duty_cycle = DUTY_HIGH
-    in3l.duty_cycle = 0
-    in4l.duty_cycle = DUTY_HIGH
-    
-def clockwise_back():
-    in1r.duty_cycle = DUTY_HIGH
-    in2r.duty_cycle = 0
-    in3r.duty_cycle = 0
-    in4r.duty_cycle = 0
-    in1l.duty_cycle = 0
-    in2l.duty_cycle = 0
-    in3l.duty_cycle = 0
-    in4l.duty_cycle = DUTY_HIGH
-    
-def counter_clockwise_back():
-    in1r.duty_cycle = 0
-    in2r.duty_cycle = DUTY_HIGH
-    in3r.duty_cycle = 0
-    in4r.duty_cycle = 0
-    in1l.duty_cycle = 0
-    in2l.duty_cycle = 0
-    in3l.duty_cycle = DUTY_HIGH
-    in4l.duty_cycle = 0
+    def backward(self):
+        # if already going forwards, stop first
+        if self.v > 0:
+            self.stop()
+        self.in1.duty_cycle = DUTY_LOW
+        self.in2.duty_cycle = DUTY_HIGH
+        self.v = max(self.v - ACCELERATION, -1*DUTY_HIGH)
+        self.en.duty_cycle = -1*self.v
 
-def run(dist, forward=True):
-    s = dist/MPS
-    start(forward=forward)
-    sleep(s)
-    stop()
-    
-def change_speed(mps):
-    MPS = mps
-    #p_A.ChangeDutyCycle(PWM_FACTOR*MPS)
-    #p_B.ChangeDutyCycle(PWM_FACTOR*MPS)
+class Car():
 
-def cleanup():
-    cam.angle = 0
-    stop()
-    GPIO.cleanup()
+    def __init__(self):
+        self.rear_passenger = Wheel(motor_hat.channels[8], motor_hat.channels[9], motor_hat.channels[5])
+        self.front_passenger = Wheel(motor_hat.channels[11], motor_hat.channels[10], motor_hat.channels[4])
+        self.rear_driver = Wheel(motor_hat.channels[1], motor_hat.channels[0], motor_hat.channels[6])
+        self.front_driver = Wheel(motor_hat.channels[2], motor_hat.channels[3], motor_hat.channels[7])
 
-#front_servo.angle = 50 
-    
-'''
-while(1):
+        self.leg = servo_hat.servo[0]
+        self.knee = servo_hat.servo[1]
+        self.cam = servo_hat.servo[15]
 
-    x=input()
-    
-    if x=='w':
-        print("run forward")
-        start()
-    
-    elif x=='x':
-        print("run backward")
-        start(forward=False)
+        self.leg.angle = 110
+        self.knee.angle = 45
+        self.cam.angle = 0
+
+    def kick():
+        self.leg.angle = 150
+        self.knee.angle = 0
+        time.sleep(1)
+        self.leg.angle = 0
+        self.knee.angle = 45
+        time.sleep(1)
+        self.leg.angle = 100
+        self.knee.angle = 45
+
+    def stop():
+        self.rear_passenger.stop()
+        self.front_passenger.stop()
+        self.rear_driver.stop()
+        self.front_driver.stop()
+
+    def forward():
+        self.rear_passenger.forward()
+        self.front_passenger.forward()
+        self.rear_driver.forward()
+        self.front_driver.forward()
+            
+    def backward():
+        self.rear_passenger.backward()
+        self.front_passenger.backward()
+        self.rear_driver.backward()
+        self.front_driver.backward()
+
+    def left():
+        self.rear_passenger.backward()
+        self.front_passenger.forward()
+        self.rear_driver.backward()
+        self.front_driver.forward()
         
-    elif x=='a':
-        left()
+    def right():
+        self.rear_passenger.forward()
+        self.front_passenger.backward()
+        self.rear_driver.forward()
+        self.front_driver.backward()
         
-    elif x=='d':
-        right()
-
-    elif x=='s':
-        stop()
+    def forward_right():
+        self.rear_passenger.forward()
+        self.front_passenger.stop()
+        self.rear_driver.forward()
+        self.front_driver.stop()
         
-    elif x=='l':
-        clockwise()
-
-    elif x=='j':
-        clockwise()
-
-    elif x in ['1', '2', '3']:
-        change_speed(int(x))
+    def forward_left():
+        self.rear_passenger.stop()
+        self.front_passenger.forward()
+        self.rear_driver.stop()
+        self.front_driver.forward()
         
-    elif x=='k':
-        kick()
+    def rotate_right_back():
+        self.rear_passenger.stop()
+        self.front_passenger.stop()
+        self.rear_driver.forward()
+        self.front_driver.forward()
         
-    elif x=='p':
-        pan()
+    def rotate_left_back():
+        self.rear_passenger.forward()
+        self.front_passenger.forward()
+        self.rear_driver.stop()
+        self.front_driver.stop()
+        
+    def clockwise():
+        self.rear_passenger.backward()
+        self.front_passenger.backward()
+        self.rear_driver.forward()
+        self.front_driver.forward()
+        
+    def counter_clockwise():
+        self.rear_passenger.forward()
+        self.front_passenger.forward()
+        self.rear_driver.backward()
+        self.front_driver.backward()
+        
+    def clockwise_back():
+        self.rear_passenger.forward()
+        self.front_passenger.stop()
+        self.rear_driver.stop()
+        self.front_driver.backward()
+        
+    def counter_clockwise_back():
+        self.rear_passenger.backward()
+        self.front_passenger.stop()
+        self.rear_driver.stop()
+        self.front_driver.forward()
 
-    elif x=='e':
-        break
-    
-    else:
-        print("<<<  wrong data  >>>")
-        print("please enter the defined data to continue.....")
-    x=None
-cleanup()
-
-'''
+    def cleanup():
+        self.cam.angle = 0
+        self.stop()
+        GPIO.cleanup()
 
