@@ -37,19 +37,22 @@ while True:
            camera.resolution, 'RGB')
 
     if img:
-        '''
-        image = pygame.surfarray.array3d(img)
-        ball, center = ball.find_ball(image, plot=True)
-        if ball is not None:
-            print(ball, center)
-            if ball[0] < center[0]:
-                print('left')
-            elif ball[0] > center[0]:
-                print('right')
-        '''
+        
         img = pygame.transform.scale(img, (640, 420))
+        image = pygame.surfarray.array3d(img)
         screen.blit(img, (x,y))
-        # TODO draw circle around ball
+        
+        ball_pos, center = ball.find_ball(image)
+        if ball_pos is not None:
+            print(ball_pos, center)
+            '''
+            if ball_pos[0] < center[0]:
+                print('left')
+            elif ball_pos[0] > center[0]:
+                print('right')
+            '''
+            # TODO draw circle around ball
+            pygame.draw.circle(screen, (255,0,0), ball_pos[:2], ball_pos[2], 1)
 
     pygame.display.update()
 

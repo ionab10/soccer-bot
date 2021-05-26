@@ -19,18 +19,18 @@ def get_mask(resized):
     green_mask = cv2.inRange(hls, lower_green, upper_green)
     mask = np.bitwise_or(white_mask, black_mask)
     mask = np.bitwise_and(mask, np.bitwise_not(green_mask))
+    return mask
 
-def find_ball(image, width=640, plot=False):
-    resized = cv2.resize(image, (width, int(image.shape[0] * width / image.shape[1])), interpolation = cv2.INTER_AREA)
-    
-    center = (resized.shape[0]/2, resized.shape[1]/2)
+def find_ball(image, plot=False):
+
+    center = (image.shape[0]/2, image.shape[1]/2)
 
     # detect circles in the image
-    mask = get_mask(resized)
+    mask = get_mask(image)
     circles = cv2.HoughCircles(mask, cv2.HOUGH_GRADIENT, 2, 500, maxRadius=250)
     
     fig, ax = plt.subplots(1, 2, figsize=(3,2))
-    ax[0].imshow(resized)
+    ax[0].imshow(image)
     ax[1].imshow(mask)
     
     if circles is None:
