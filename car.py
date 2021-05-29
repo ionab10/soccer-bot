@@ -70,7 +70,7 @@ class Car():
 
         self.leg.angle = 110
         self.knee.angle = 45
-        self.cam.angle = 0
+        self.cam.angle = 30
 
     def kick(self):
         self.leg.angle = 150

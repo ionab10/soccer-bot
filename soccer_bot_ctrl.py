@@ -89,20 +89,23 @@ while True:
                     (255,0,0),
                     get_arrow_coords(320, 420, "right")
                     )
-                car.right()
+                car.clockwise()
             elif x_ball > center[0] + r:
                 pygame.draw.polygon(
                     screen,
                     (255,0,0),
                     get_arrow_coords(320, 420, "left")
                     )
-                car.left()
+                car.counter_clockwise()
             elif r >= 40:
                 car.stop()
             else:
                 car.forward()
             # draw circle around ball
             pygame.draw.circle(screen, (255,0,0), (x_ball, y_ball), r, 1)
+            
+        else:
+            car.stop()
 
     pygame.display.update()
 
@@ -117,9 +120,9 @@ while True:
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                car.left()
+                car.counter_clockwise()
             elif event.key == pygame.K_RIGHT:
-                car.right()
+                car.clockwise()
             elif event.key == pygame.K_UP:
                 car.forward()
             elif event.key == pygame.K_DOWN:
