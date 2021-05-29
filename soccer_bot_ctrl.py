@@ -4,6 +4,29 @@ import pygame
 import io
 import ball
 from car import Car
+
+def get_arrow_coords(x, y, d):
+    if d == "right":
+        return (
+            (x+0, y+10),
+            (x+0, y+20),
+            (x+20, y+20),
+            (x+20, y+30),
+            (x+30, y+15),
+            (x+20, y+0),
+            (x+20, y+10)
+            )
+    elif d == "left":
+        return (
+            (x+30, y+10),
+            (x+30, y+20),
+            (x+10, y+20),
+            (x+10, y+30),
+            (x+0, y+15),
+            (x+10, y+0),
+            (x+10, y+10)
+            )
+
 pygame.init()
 
 car = Car()
@@ -16,9 +39,6 @@ screen = pygame.display.set_mode((0,0))
 camera = picamera.PiCamera()
 camera.resolution = (1280, 720)
 camera.crop = (0.0, 0.0, 1.0, 1.0)
-
-x = (screen.get_width() - camera.resolution[0]) / 2
-y = (screen.get_height() - camera.resolution[1]) / 2
 rgb = bytearray(camera.resolution[0] * camera.resolution[1] * 3)
 
 
@@ -39,20 +59,50 @@ while True:
     if img:
         
         img = pygame.transform.scale(img, (640, 420))
-        image = pygame.surfarray.array3d(img)
-        screen.blit(img, (x,y))
+        image = pygame.surfarray.array3d(img) 
+        ball_pos, center, mask = ball.find_ball(image)
         
-        ball_pos, center = ball.find_ball(image)
+        thumbnail = pygame.transform.scale(img, (128, 84))
+        screen.blit(thumbnail, (640, 0))
+        screen.blit(pygame.surfarray.make_surface(mask) , (0,0))
+        
+        # draw crosshair at centre
+        pygame.draw.polygon(
+            screen,
+            (0,0,255),
+            [
+                (center[0], center[1]+10),
+                (center[0], center[1]-10),
+                (center[0]-10, center[1]),
+                (center[0]+10, center[1]),
+            ],
+            1)
+        
         if ball_pos is not None:
+            x_ball = ball_pos[1]
+            y_ball = ball_pos[0]
+            r = ball_pos[2]
             print(ball_pos, center)
-            '''
-            if ball_pos[0] < center[0]:
-                print('left')
-            elif ball_pos[0] > center[0]:
-                print('right')
-            '''
-            # TODO draw circle around ball
-            pygame.draw.circle(screen, (255,0,0), ball_pos[:2], ball_pos[2], 1)
+            if x_ball < center[0] - r:
+                pygame.draw.polygon(
+                    screen,
+                    (255,0,0),
+                    get_arrow_coords(320, 420, "right")
+                    )
+                car.right()
+            elif x_ball > center[0] + r:
+                pygame.draw.polygon(
+                    screen,
+                    (255,0,0),
+                    get_arrow_coords(320, 420, "left")
+                    )
+                car.left()
+            elif r >= 40:
+                car.stop()
+            else:
+                car.forward()
+            # draw circle around ball
+            pygame.draw.circle(screen, (255,0,0), (x_ball, y_ball), r, 1)
 
     pygame.display.update()
 
@@ -78,6 +128,16 @@ while True:
                 car.kick()
             elif event.key == 13:
                 car.stop()
+            elif event.key == pygame.K_w:
+                try:
+                    car.cam.angle -= 5
+                except:
+                    pass
+            elif event.key == pygame.K_s:
+                try:
+                    car.cam.angle += 5
+                except:
+                    pass
             else:
                 print(event.key)
         #else:
