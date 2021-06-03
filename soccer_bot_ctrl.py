@@ -5,6 +5,8 @@ import io
 import ball
 from car import Car
 
+AI=False
+
 def get_arrow_coords(x, y, d):
     if d == "right":
         return (
@@ -83,28 +85,30 @@ while True:
             y_ball = ball_pos[0]
             r = ball_pos[2]
             print(ball_pos, center)
-            if x_ball < center[0] - r:
-                pygame.draw.polygon(
-                    screen,
-                    (255,0,0),
-                    get_arrow_coords(320, 420, "right")
-                    )
-                car.clockwise()
-            elif x_ball > center[0] + r:
-                pygame.draw.polygon(
-                    screen,
-                    (255,0,0),
-                    get_arrow_coords(320, 420, "left")
-                    )
-                car.counter_clockwise()
-            elif r >= 40:
-                car.stop()
-            else:
-                car.forward()
+            if AI:
+                
+                if x_ball < center[0] - r:
+                    pygame.draw.polygon(
+                        screen,
+                        (255,0,0),
+                        get_arrow_coords(320, 420, "right")
+                        )
+                    car.clockwise()
+                elif x_ball > center[0] + r:
+                    pygame.draw.polygon(
+                        screen,
+                        (255,0,0),
+                        get_arrow_coords(320, 420, "left")
+                        )
+                    car.counter_clockwise()
+                elif r >= 40:
+                    car.stop()
+                else:
+                    car.forward()
             # draw circle around ball
             pygame.draw.circle(screen, (255,0,0), (x_ball, y_ball), r, 1)
             
-        else:
+        elif AI:
             car.stop()
 
     pygame.display.update()
@@ -128,6 +132,7 @@ while True:
             elif event.key == pygame.K_DOWN:
                 car.backward()
             elif event.key == pygame.K_k:
+                print('kick')
                 car.kick()
             elif event.key == 13:
                 car.stop()

@@ -59,10 +59,10 @@ class Wheel():
 class Car():
 
     def __init__(self):
-        self.rear_passenger = Wheel(motor_hat.channels[8], motor_hat.channels[9], motor_hat.channels[5])
-        self.front_passenger = Wheel(motor_hat.channels[11], motor_hat.channels[10], motor_hat.channels[4])
-        self.rear_driver = Wheel(motor_hat.channels[1], motor_hat.channels[0], motor_hat.channels[6])
-        self.front_driver = Wheel(motor_hat.channels[2], motor_hat.channels[3], motor_hat.channels[7])
+        self.rear_passenger = Wheel(motor_hat.channels[9], motor_hat.channels[8], motor_hat.channels[5])
+        self.front_passenger = Wheel(motor_hat.channels[10], motor_hat.channels[11], motor_hat.channels[4])
+        self.rear_driver = Wheel(motor_hat.channels[0], motor_hat.channels[1], motor_hat.channels[6])
+        self.front_driver = Wheel(motor_hat.channels[3], motor_hat.channels[2], motor_hat.channels[7])
 
         self.leg = servo_hat.servo[0]
         self.knee = servo_hat.servo[1]
@@ -70,7 +70,7 @@ class Car():
 
         self.leg.angle = 110
         self.knee.angle = 45
-        self.cam.angle = 30
+        self.cam.angle = 60
 
     def kick(self):
         self.leg.angle = 150
