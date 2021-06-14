@@ -146,6 +146,8 @@ while True:
                     car.cam.angle += 5
                 except:
                     pass
+            elif event.key == pygame.K_a:
+                AI = not AI
             else:
                 print(event.key)
         #else:
