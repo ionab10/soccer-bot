@@ -13,6 +13,7 @@ DUTY_LOW = 0
 ACCELERATION = 10000
 
 DEFAULT_CAM_ANGLE = 60
+DEFAULT_STEERING_ANGLE = 97
 
 motor_i2c = bitbangio.I2C(board.SCL, board.SDA)
 motor_hat = PCA9685(motor_i2c)
@@ -71,6 +72,7 @@ class Car():
 
         if type(steering) == int:
             self.steering = servo_hat.servo[steering]
+            self.steering.angle = DEFAULT_STEERING_ANGLE
         else:
             self.steering = steering
         self.leg = servo_hat.servo[0]
@@ -130,7 +132,7 @@ class Car():
         elif self.steering == None:
             self.counter_clockwise()
         else:
-            self.steering.angle += 5
+            self.steering.angle = min(self.steering.angle + 5, 180)
         
     def right(self):
         if self.steering == 'mecanum':
@@ -141,7 +143,7 @@ class Car():
         elif self.steering == None:
             self.clockwise()
         else:
-            self.steering.angle -= 5
+            self.steering.angle = max(self.steering.angle - 5, 0)
         
     def forward_right(self):
         self.rear_passenger.forward()
@@ -181,6 +183,7 @@ class Car():
 
     def cleanup(self):
         self.cam.angle = DEFAULT_CAM_ANGLE
+        self.steering.angle = DEFAULT_STEERING_ANGLE
         self.stop()
         GPIO.cleanup()
 
