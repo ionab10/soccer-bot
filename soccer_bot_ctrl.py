@@ -31,7 +31,7 @@ def get_arrow_coords(x, y, d):
 
 pygame.init()
 
-car = Car()
+car = Car(steering=2)
 car.stop()
 
 #screen = pygame.display.set_mode((640,480),0)
@@ -124,9 +124,9 @@ while True:
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                car.counter_clockwise()
+                car.left()
             elif event.key == pygame.K_RIGHT:
-                car.clockwise()
+                car.right()
             elif event.key == pygame.K_UP:
                 car.forward()
             elif event.key == pygame.K_DOWN:
